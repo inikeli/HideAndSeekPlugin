@@ -1,0 +1,8 @@
+name: HideAndSeekPlugin
+main: me.nikita.hidenseek.HideAndSeekPlugin
+version: 1.0
+api-version: 1.21
+commands:
+  has:
+    description: Команда управления игрой Прятки
+    usage: /has start
