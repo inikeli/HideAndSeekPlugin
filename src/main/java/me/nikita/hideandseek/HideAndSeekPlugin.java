@@ -1,26 +1,33 @@
-package me.nikita.hidenseek;
+package me.nikita.hideandseek;
 
+import me.nikita.hideandseek.disguise.DisguiseManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import me.nikita.hideandseek.listener.TransformListener;
 
-public final class HideAndSeekPlugin extends JavaPlugin {
+public class HideAndSeekPlugin extends JavaPlugin {
 
-    private GameManager gameManager;
-    private BlockDisguiseManager disguiseManager;
+    private static HideAndSeekPlugin instance;
+    private DisguiseManager disguiseManager;
 
     @Override
     public void onEnable() {
-        disguiseManager = new BlockDisguiseManager(this);
-        gameManager = new GameManager(this, disguiseManager);
+        instance = this;
 
-        getCommand("has").setExecutor(new GameCommand(gameManager));
-        getServer().getPluginManager().registerEvents(new PlayerListener(gameManager, disguiseManager), this);
+        // ИСПРАВЛЕНИЕ: Передаем 'this' (экземпляр плагина) в конструктор
+        disguiseManager = new DisguiseManager(this);
 
-        getLogger().info("HideAndSeekPlugin включен!");
+        getServer().getPluginManager().registerEvents(
+                new TransformListener(disguiseManager), this);
+
+        getLogger().info("HideAndSeek plugin enabled");
     }
 
-    @Override
-    public void onDisable() {
-        gameManager.stopGame();
-        getLogger().info("HideAndSeekPlugin выключен!");
+    public static HideAndSeekPlugin getInstance() {
+        return instance;
+    }
+
+    // Хорошей практикой будет добавить геттер для менеджера
+    public DisguiseManager getDisguiseManager() {
+        return disguiseManager;
     }
 }

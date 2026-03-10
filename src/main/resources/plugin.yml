@@ -1,7 +1,8 @@
 name: HideAndSeekPlugin
-main: me.nikita.hidenseek.HideAndSeekPlugin
 version: 1.0
+main: me.nikita.hideandseek.HideAndSeekPlugin
 api-version: 1.21
+
 commands:
   has:
     description: Команда управления игрой Прятки
