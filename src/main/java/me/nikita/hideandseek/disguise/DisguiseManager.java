@@ -22,6 +22,27 @@ public class DisguiseManager {
     public DisguiseManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
+    public void clearAllDisguises() {
+        // 1. Сначала проходим по всем игрокам онлайн и возвращаем им видимость
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setInvisible(false);
+            // Снимаем пассажиров (наши блоки)
+            player.getPassengers().forEach(player::removePassenger);
+        }
+
+        // 2. Очищаем мапу, так как мы всех "размаскировали"
+        disguisedPlayers.clear();
+
+        // 3. Ультимативная очистка всех BlockDisplay во всех мирах сервера
+        // Это удалит даже те блоки, которые "зависли" после вылета игрока
+        for (org.bukkit.World world : Bukkit.getWorlds()) {
+            for (BlockDisplay display : world.getEntitiesByClass(BlockDisplay.class)) {
+                // Если ты использовал метадату, можно проверять её здесь,
+                // но для команды 'clear' лучше удалить вообще все BlockDisplay
+                display.remove();
+            }
+        }
+    }
 
     public void disguise(Player player, Material material) {
         removeDisguise(player);

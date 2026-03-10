@@ -1,5 +1,6 @@
 package me.nikita.hideandseek;
 
+import me.nikita.hideandseek.commands.AdminCommand;
 import me.nikita.hideandseek.disguise.DisguiseManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import me.nikita.hideandseek.listener.TransformListener;
@@ -18,7 +19,7 @@ public class HideAndSeekPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new TransformListener(disguiseManager), this);
-
+        getCommand("has").setExecutor(new AdminCommand(disguiseManager));
         getLogger().info("HideAndSeek plugin enabled");
     }
 
