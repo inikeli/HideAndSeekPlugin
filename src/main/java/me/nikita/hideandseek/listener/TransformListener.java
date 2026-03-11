@@ -1,6 +1,7 @@
 package me.nikita.hideandseek.listener;
 
 import me.nikita.hideandseek.disguise.DisguiseManager;
+import me.nikita.hideandseek.item.MagicStick;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,7 @@ public class TransformListener implements Listener {
         ItemStack item = event.getItem();
 
         // 1. Проверяем, что в руке именно палочка
-        if (item == null || item.getType() != Material.STICK) {
+        if (!MagicStick.isMagicStick(item)) {
             return;
         }
 
@@ -35,7 +36,19 @@ public class TransformListener implements Listener {
                     Material.OAK_PLANKS,
                     Material.STONE,
                     Material.CRAFTING_TABLE,
-                    Material.DIRT
+                    Material.PUMPKIN,
+                    Material.BOOKSHELF,
+                    Material.FURNACE,
+                    Material.HAY_BLOCK,
+                    Material.MELON,
+                    Material.DIRT,
+                    Material.BRICKS,
+                    Material.MOSS_BLOCK,
+                    Material.GOLD_BLOCK,
+                    Material.COAL_ORE,
+                    Material.DEEPSLATE_BRICKS,
+                    Material.BARREL,
+                    Material.OAK_STAIRS
             };
             Material randomMaterial = possibleBlocks[new java.util.Random().nextInt(possibleBlocks.length)];
 

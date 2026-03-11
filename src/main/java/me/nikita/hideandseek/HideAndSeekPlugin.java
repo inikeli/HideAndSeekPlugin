@@ -2,6 +2,7 @@ package me.nikita.hideandseek;
 
 import me.nikita.hideandseek.commands.AdminCommand;
 import me.nikita.hideandseek.disguise.DisguiseManager;
+import me.nikita.hideandseek.item.MagicStick;
 import org.bukkit.plugin.java.JavaPlugin;
 import me.nikita.hideandseek.listener.TransformListener;
 
@@ -16,7 +17,7 @@ public class HideAndSeekPlugin extends JavaPlugin {
 
         // ИСПРАВЛЕНИЕ: Передаем 'this' (экземпляр плагина) в конструктор
         disguiseManager = new DisguiseManager(this);
-
+        MagicStick.init(this);
         getServer().getPluginManager().registerEvents(
                 new TransformListener(disguiseManager), this);
         getCommand("has").setExecutor(new AdminCommand(disguiseManager));

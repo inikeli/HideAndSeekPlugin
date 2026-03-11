@@ -45,40 +45,40 @@ public class DisguiseManager {
     }
 
     public void disguise(Player player, Material material) {
+        // 1. Сначала полностью очищаем старое состояние
         removeDisguise(player);
 
-        // 1. Подготавливаем локацию: берем координаты игрока, но убираем повороты головы
-        org.bukkit.Location loc = player.getLocation();
-        loc.setYaw(0);   // Смотрит строго по оси Z
-        loc.setPitch(0); // Смотрит строго горизонтально
+        // 2. Проверка на валидность блока (защита от лодок и табличек)
+        if (!material.isBlock()) {
+            material = Material.OAK_PLANKS; // Дефолтный блок, если попался плохой материал
+        }
 
-        // 2. Спавним сущность уже в выровненной локации
+        // 3. Подготовка локации
+        org.bukkit.Location loc = player.getLocation();
+        loc.setYaw(0);
+        loc.setPitch(0);
+
+        // 4. Создание блока
         BlockDisplay blockDisplay = (BlockDisplay) player.getWorld().spawnEntity(loc, EntityType.BLOCK_DISPLAY);
         blockDisplay.setBlock(Bukkit.createBlockData(material));
 
-        // 3. Настройка трансформации (размер и центровка)
+        // Настройка трансформации
         float scale = 1.001f;
         Transformation transformation = blockDisplay.getTransformation();
         transformation.getScale().set(scale, scale, scale);
-
-        // Сдвигаем на 0.5 блока, чтобы игрок был ровно в центре блока
         float offset = -(scale / 2.0f);
-        transformation.getTranslation().set(offset, -1.8f, offset);
-
+        transformation.getTranslation().set(offset, -1.6f, offset); // -1.6 обычно лучше чем -1.8
         blockDisplay.setTransformation(transformation);
-
-        // 4. Замораживаем поворот блока
-        // Billboard.FIXED гарантирует, что блок НЕ будет вращаться вслед за игроком
         blockDisplay.setBillboard(org.bukkit.entity.Display.Billboard.FIXED);
-
-        // Делаем блок ярким, чтобы он не затенялся внутри модельки игрока
         blockDisplay.setBrightness(new org.bukkit.entity.Display.Brightness(15, 15));
 
-        // 5. Привязываем к игроку
-        player.setInvisible(true);
-        player.addPassenger(blockDisplay);
-
-        disguisedPlayers.put(player.getUniqueId(), blockDisplay.getUniqueId());
+        // 5. МАГИЯ: Используем планировщик, чтобы посадить пассажира через 1 тик
+        // Это гарантирует, что клиент увидит новый блок
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            player.setInvisible(true);
+            player.addPassenger(blockDisplay);
+            disguisedPlayers.put(player.getUniqueId(), blockDisplay.getUniqueId());
+        }, 1L);
     }
 
     public void removeDisguise(Player player) {
